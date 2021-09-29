@@ -40,6 +40,8 @@
 // ROS
 #include "std_srvs/Empty.h"
 #include <ros/ros.h>
+#include <nav_msgs/Odometry.h>
+
 
 // Aerostack msgs
 #include <behavior_execution_manager_msgs/BehaviorActivationFinished.h>
@@ -47,6 +49,7 @@
 #include <geometry_msgs/TwistStamped.h>
 
 #include <BehaviorExecutionManager.h>
+#include "ros_utils_lib/ros_utils.hpp"
 
 class BehaviorSelfLocalizeWithGroundTruth : public BehaviorExecutionManager
 {
@@ -59,9 +62,15 @@ public:
 private:
   ros::NodeHandle nh;
   std::string nspace;
+  std::string estimated_pose_topic;
+  std::string estimated_speed_topic;
+  std::string raw_pose_topic;
+  std::string raw_speed_topic;
+  std::string raw_ground_truth;
 
   ros::Subscriber ground_speed_sub;
   ros::Subscriber ground_pose_sub;
+  ros::Subscriber ground_truth_sub;
 
   ros::Publisher self_localization_pose_pub;
   ros::Publisher self_localization_speed_pub;
@@ -80,6 +89,7 @@ private:
 public: // Callbacks
   void groundPoseCallBack(const geometry_msgs::PoseStamped &message);
   void groundSpeedCallBack(const geometry_msgs::TwistStamped &message);
+  void groundTruthCallBack(const nav_msgs::Odometry &message);
 };
 
 #endif

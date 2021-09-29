@@ -50,15 +50,21 @@ void BehaviorSelfLocalizeWithGroundTruth::onConfigure()
 { 
   nh = getNodeHandle();
   nspace = getNamespace();
+  ros_utils_lib::getPrivateParam<std::string>("~estimated_pose_topic"   , estimated_pose_topic  ,"self_localization/pose");
+  ros_utils_lib::getPrivateParam<std::string>("~estimated_speed_topic"  , estimated_speed_topic ,"self_localization/speed");
+  ros_utils_lib::getPrivateParam<std::string>("~raw_pose_topic"         , raw_pose_topic        ,"ground_truth/pose");
+  ros_utils_lib::getPrivateParam<std::string>("~raw_speed_topic"        , raw_speed_topic       ,"ground_truth/speed");
+  ros_utils_lib::getPrivateParam<std::string>("~raw_ground_truth_topic" , raw_ground_truth      ,"ground_truth");
 }
 
 void BehaviorSelfLocalizeWithGroundTruth::onActivate()
 {
-  ground_pose_sub = nh.subscribe("/" + nspace + "/ground_truth/pose", 1, &BehaviorSelfLocalizeWithGroundTruth::groundPoseCallBack, this);
-  ground_speed_sub = nh.subscribe("/" + nspace + "/ground_truth/speed", 1, &BehaviorSelfLocalizeWithGroundTruth::groundSpeedCallBack, this);
-  
-  self_localization_pose_pub = nh.advertise<geometry_msgs::PoseStamped>("/" + nspace + "/self_localization/pose", 1, true);
-  self_localization_speed_pub = nh.advertise<geometry_msgs::TwistStamped>("/" + nspace + "/self_localization/speed", 1, true);
+  ground_pose_sub = nh.subscribe("/" + nspace + "/" + raw_pose_topic, 1, &BehaviorSelfLocalizeWithGroundTruth::groundPoseCallBack, this);
+  ground_speed_sub = nh.subscribe("/" + nspace + "/" + raw_speed_topic, 1, &BehaviorSelfLocalizeWithGroundTruth::groundSpeedCallBack, this);
+  ground_truth_sub = nh.subscribe("/" + nspace + "/" + raw_ground_truth, 1, &BehaviorSelfLocalizeWithGroundTruth::groundTruthCallBack, this);
+
+  self_localization_pose_pub = nh.advertise<geometry_msgs::PoseStamped>("/" + nspace + "/" + estimated_pose_topic, 1, true);
+  self_localization_speed_pub = nh.advertise<geometry_msgs::TwistStamped>("/" + nspace + "/" + estimated_speed_topic, 1, true);
 }
 void BehaviorSelfLocalizeWithGroundTruth::onDeactivate()
 {
@@ -102,4 +108,16 @@ void BehaviorSelfLocalizeWithGroundTruth::groundPoseCallBack(const geometry_msgs
 void BehaviorSelfLocalizeWithGroundTruth::groundSpeedCallBack(const geometry_msgs::TwistStamped &message)
 {
   self_localization_speed_pub.publish(message);
+}
+
+void BehaviorSelfLocalizeWithGroundTruth::groundTruthCallBack(const nav_msgs::Odometry &message)
+{
+  geometry_msgs::PoseStamped pose;
+  pose.header.stamp = ros::Time::now();
+  pose.pose = message.pose.pose;
+  self_localization_pose_pub.publish(pose);
+  geometry_msgs::TwistStamped speed;
+  speed.header.stamp = ros::Time::now();
+  speed.twist = message.twist.twist;
+  self_localization_speed_pub.publish(speed);
 }

@@ -7,6 +7,9 @@
     <arg name="activation_finished_topic"          default="behavior_activation_finished" />
     <arg name="estimated_pose_topic"               default="self_localization/pose" />
     <arg name="estimated_speed_topic"              default="self_localization/speed" />
+    <arg name="raw_pose_topic"                     default="ground_truth/pose" />
+    <arg name="raw_speed_topic"                    default="ground_truth/speed" />
+    <arg name="raw_ground_truth"                   default="ground_truth" />
     <arg name="flight_action_topic"                default="actuator_command/flight_action" />
     <arg name="consult_belief"                     default="consult_belief" />
     <arg name="behavior_system"                    default="basic_quadrotor_behaviors" />
@@ -22,12 +25,15 @@
       <param name="~check_activation_conditions_srv"     value="$(arg check_activation_conditions_srv)"    type="str" />
       <param name="~estimated_pose_topic"                value="$(arg estimated_pose_topic)"               type="str" />
       <param name="~estimated_speed_topic"               value="$(arg estimated_speed_topic)"              type="str" />
+      <param name="~raw_pose_topic"                      value="$(arg raw_pose_topic)"                     type="str" />
+      <param name="~raw_speed_topic"                     value="$(arg raw_speed_topic)"                    type="str" />
+      <param name="~raw_ground_truth"                    value="$(arg raw_ground_truth)"                   type="str" />
       <param name="~flight_action_topic"                 value="$(arg flight_action_topic)"                type="str" />
       <param name="~consult_belief"                      value="$(arg consult_belief)"                     type="str" />
       <param name="~behavior_system"                     value="$(arg behavior_system)"                    type="str" />
       <param name="~odometry_str"                        value="$(arg odometry_str)"                       type="str" /> 
       <param name="~battery_topic"                       value="$(arg battery_topic)"                      type="str" /> 
-      <param name="~flight_state_topic"                  value="$(arg flight_state_topic)"                       type="str" /> 
+      <param name="~flight_state_topic"                  value="$(arg flight_state_topic)"                 type="str" /> 
 
 
        <node name="behavior_take_off" pkg="basic_quadrotor_behaviors"  type="BehaviorTakeOff"  output="screen"/>

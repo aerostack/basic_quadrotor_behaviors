@@ -44,6 +44,8 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   aerostack_msgs
   behavior_execution_manager_msgs
+  ros_utils_lib
+  nav_msgs
 )
 
 ###################################
@@ -65,6 +67,8 @@ catkin_package(
   geometry_msgs
   aerostack_msgs
   behavior_execution_manager_msgs
+  ros_utils_lib
+  nav_msgs
   DEPENDS yaml-cpp
 )
 
